@@ -1,3 +1,5 @@
+from django.conf import settings
+        
 import traceback
 import sys
 import re
@@ -49,9 +51,6 @@ class Menu(object):
         # we don't need to do this more than once
         if c.loaded == True:
             return
-
-        # deferred import of django settings module
-        from django.conf import settings
 
         # loop through our INSTALLED_APPS
         for app in settings.INSTALLED_APPS:
