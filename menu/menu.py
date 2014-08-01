@@ -21,7 +21,8 @@ class Menu(object):
     properly.
     """
     items = {}
-    sorted = {}
+    sorted = set()
+    processors = {}
 
     @classmethod
     def add_item(c, name, item):
@@ -32,18 +33,35 @@ class Menu(object):
             if name not in c.items:
                 c.items[name] = []
             c.items[name].append(item)
-            c.sorted[name] = False
+            c.sorted.add(name)
 
     @classmethod
-    def sort_menus(c):
+    def add_pre_process(c, name, func, once=False):
+        if callable(func):
+            if name not in c.processors:
+                c.processors[name] = []
+            c.processors[name].append({ 'func': func, 'once': once })
+
+    @classmethod
+    def sort_menu(c, name):
         """
         sort_menus goes through the items and sorts them based on
         their weight
         """
-        for name in c.items:
-            if not c.sorted[name]:
-                c.items[name].sort(key=lambda x: x.weight)
-                c.sorted[name] = True
+        if name not in c.sorted:
+            return
+        c.items[name].sort(key=lambda x: x.weight)
+        c.sorted.remove(name)
+
+    @classmethod
+    def pre_process(c, name):
+        if name not in c.processors:
+            return
+
+        for idx, item in enumerate(c.processors[name]):
+            item['func']()
+            if item['once']:
+                del c.processors[name][idx]
 
     @classmethod
     def process(c, request, name=None):
@@ -51,8 +69,6 @@ class Menu(object):
         process uses the current request to determine which menus
         should be visible, which are selected, etc.
         """
-        c.sort_menus()
-
         if name is None:
             # special case, process all menus
             items = {}
@@ -60,8 +76,12 @@ class Menu(object):
                 items[name] = c.process(request, name)
             return items
 
+        c.pre_process(name)
+
         if name not in c.items:
             return []
+
+        c.sort_menu(name)
 
         curitem = None
         for item in c.items[name]:
