@@ -3,6 +3,7 @@ from .. import Menu
 
 register = template.Library()
 
+
 class MenuNode(template.Node):
     def __init__(self):
         pass
@@ -60,6 +61,7 @@ class MenuNode(template.Node):
         context['has_submenu'] = has_submenu
 
         return ''
+
 
 def generate_menu(parser, token):
     return MenuNode()

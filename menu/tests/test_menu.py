@@ -1,11 +1,10 @@
-import unittest
-
 from django.conf import settings
 from django.template import Template, Context
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from menu import Menu, MenuItem
+
 
 class MenuTests(TestCase):
     def setUp(self):
@@ -49,7 +48,6 @@ class MenuTests(TestCase):
         self.assertEqual(Menu.items['test'][2].selected, False)
         self.assertEqual(Menu.items['test'][1].children[1].selected, True)
 
-
     def test_template_tag(self):
         """
         Ensure the templating works
@@ -86,6 +84,7 @@ class MenuTests(TestCase):
         }))
 
         self.assertEqual(out, "Parent 1,Parent 2,Parent 3,")
+
 
 class MenuItemTests(TestCase):
     def test_kwargs(self):
