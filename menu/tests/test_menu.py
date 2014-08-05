@@ -17,8 +17,8 @@ class MenuTests(TestCase):
         ]
 
         Menu.items = {}
-        Menu.sorted = {}
-        Menu.loaded = False
+        Menu.sorted = set()
+        Menu.processors = {}
         Menu.add_item("test", MenuItem("Parent 1", "/parent1"))
         Menu.add_item("test", MenuItem("Parent 2", "/parent2", children=kids2))
         Menu.add_item("test", MenuItem("Parent 3", "/parent3", children=kids3))
